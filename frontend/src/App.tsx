@@ -1,10 +1,10 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Layout from './layouts/Layout'
-import Home from './pages/Home'
-import Recipes from './pages/Recipes'
-import MealPlan from './pages/MealPlan'
-import ShoppingList from './pages/ShoppingList'
-import './App.css'
+import Home from './pages/navbar/home/Home'
+import MealPlan from './pages/navbar/planning/MealPlan'
+import ShoppingList from './pages/navbar/shopping_list/ShoppingList'
+import Login from './pages/navbar/login/Login'
+import Recipes from './pages/navbar/recipes/Recipes'
 
 function App() {
   return (
@@ -15,6 +15,7 @@ function App() {
           <Route path="recipes" element={<Recipes />} />
           <Route path="meal-plan" element={<MealPlan />} />
           <Route path="shopping-list" element={<ShoppingList />} />
+          <Route path="login" element={<Login />} />
         </Route>
       </Routes>
     </Router>
