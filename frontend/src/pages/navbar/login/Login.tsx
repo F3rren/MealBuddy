@@ -1,21 +1,38 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "../../../contexts/AuthContext";
+
 const LoginPage: React.FC = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  
+  const { login, isLoading } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+  
+  // Pagina da cui l'utente è arrivato (per il redirect dopo login)
+  const from = location.state?.from || '/';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
+    setError("");
 
-    // Simula una chiamata API
-    setTimeout(() => {
-      console.log("Login attempt:", { username, password, rememberMe });
-      setIsLoading(false);
-      // Qui puoi aggiungere la logica di autenticazione
-    }, 1500);
+    const success = await login(username, password);
+    
+    if (success) {
+      // Qui potresti gestire il "remember me" se necessario
+      if (rememberMe) {
+        // Logica per ricordare l'utente più a lungo
+        console.log("User wants to be remembered");
+      }
+      
+      // Redirect alla pagina precedente o alla home
+      navigate(from, { replace: true });
+    } else {
+      setError("Credenziali non valide. Riprova.");
+    }
   };
 
   return (
@@ -36,6 +53,22 @@ const LoginPage: React.FC = () => {
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-6 mb-2">
+            {/* Error Message */}
+            {error && (
+              <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                <div className="flex items-center">
+                  <div className="flex-shrink-0">
+                    <span className="text-red-400 text-xl">❌</span>
+                  </div>
+                  <div className="ml-3">
+                    <p className="text-sm text-red-800 font-medium">
+                      {error}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Username Field */}
             <div className="space-y-2">
               <div className="relative mb-2">
@@ -65,7 +98,7 @@ const LoginPage: React.FC = () => {
                   type="password"
                   id="password"
                   name="password"
-                  placeholder="Inserisci la tua password"
+                  placeholder="Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
@@ -128,7 +161,7 @@ const LoginPage: React.FC = () => {
             {/* Grid per bottoni aggiuntivi */}
             <div className="grid grid-cols-4 gap-3 mt-4">
               {/* GitHub */}
-              <button className="flex items-center justify-center p-3 border border-gray-300 rounded-lg bg-gray-900 text-white ">
+              <button onClick={() => window.open('https://github.com', '_blank')} className="flex items-center justify-center p-3 border border-gray-300 rounded-lg bg-gray-900 text-white ">
                 <svg
                   className="w-5 h-5"
                   fill="currentColor"
@@ -139,7 +172,7 @@ const LoginPage: React.FC = () => {
               </button>
 
               {/* LinkedIn */}
-              <button className="flex items-center justify-center p-3 border border-gray-300 rounded-lg bg-blue-600 text-white ">
+              <button onClick={() => window.open('https://www.linkedin.com', '_blank')} className="flex items-center justify-center p-3 border border-gray-300 rounded-lg bg-blue-600 text-white ">
                 <svg
                   className="w-5 h-5"
                   fill="currentColor"
@@ -150,7 +183,7 @@ const LoginPage: React.FC = () => {
               </button>
 
               {/* Twitter/X */}
-              <button className="flex items-center justify-center p-3 border border-gray-300 rounded-lg bg-black text-white ">
+              <button onClick={() => window.open('https://twitter.com', '_blank')} className="flex items-center justify-center p-3 border border-gray-300 rounded-lg bg-black text-white ">
                 <svg
                   className="w-5 h-5"
                   fill="currentColor"
@@ -161,7 +194,7 @@ const LoginPage: React.FC = () => {
               </button>
 
               {/* Discord */}
-              <button className="flex items-center justify-center p-3 border border-gray-300 rounded-lg bg-indigo-600 text-white ">
+              <button onClick={() => window.open('https://discord.com', '_blank')} className="flex items-center justify-center p-3 border border-gray-300 rounded-lg bg-indigo-600 text-white ">
                 <svg
                   className="w-5 h-5"
                   fill="currentColor"
@@ -175,7 +208,7 @@ const LoginPage: React.FC = () => {
             {/* Row aggiuntiva */}
             <div className="grid grid-cols-4 gap-3">
               {/* Instagram */}
-              <button className="flex items-center justify-center p-3 border border-gray-300 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 text-white">
+              <button onClick={() => window.open('https://www.instagram.com', '_blank')} className="flex items-center justify-center p-3 border border-gray-300 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 text-white">
                 <svg
                   className="w-5 h-5"
                   fill="currentColor"
@@ -186,7 +219,7 @@ const LoginPage: React.FC = () => {
               </button>
 
               {/* Stack Overflow */}
-              <button className="flex items-center justify-center p-3 border border-gray-300 rounded-lg bg-orange-500 text-white">
+              <button onClick={() => window.open('https://stackoverflow.com', '_blank')} className="flex items-center justify-center p-3 border border-gray-300 rounded-lg bg-orange-500 text-white">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-4 w-4"
@@ -198,7 +231,7 @@ const LoginPage: React.FC = () => {
               </button>
 
               {/* Telegram */}
-              <button className="flex items-center justify-center p-3 border border-gray-300 rounded-lg bg-blue-500 text-white ">
+              <button onClick={() => window.open('https://telegram.org', '_blank')} className="flex items-center justify-center p-3 border border-gray-300 rounded-lg bg-blue-500 text-white ">
                 <svg
                   className="w-5 h-5"
                   fill="currentColor"
@@ -209,7 +242,7 @@ const LoginPage: React.FC = () => {
               </button>
 
               {/* WhatsApp */}
-              <button className="flex items-center justify-center p-3 border border-gray-300 rounded-lg bg-green-500 text-white ">
+              <button onClick={() => window.open('https://www.whatsapp.com', '_blank')} className="flex items-center justify-center p-3 border border-gray-300 rounded-lg bg-green-500 text-white ">
                 <svg
                   className="w-5 h-5"
                   fill="currentColor"
