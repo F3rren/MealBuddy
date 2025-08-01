@@ -40,7 +40,8 @@ const ForgotForm: React.FC = () => {
                   Password Dimenticata?
                 </h2>
                 <p className="text-gray-600">
-                  Non preoccuparti! Inserisci la tua email e ti invieremo un link per reimpostare la password.
+                  Non preoccuparti! Inserisci la tua email e ti invieremo un
+                  link per reimpostare la password.
                 </p>
               </>
             ) : (
@@ -49,7 +50,8 @@ const ForgotForm: React.FC = () => {
                   Email Inviata!
                 </h2>
                 <p className="text-gray-600">
-                  Abbiamo inviato un link per il reset della password al tuo indirizzo email.
+                  Abbiamo inviato un link per il reset della password al tuo
+                  indirizzo email.
                 </p>
               </>
             )}
@@ -79,9 +81,9 @@ const ForgotForm: React.FC = () => {
                 </div>
 
                 {/* Submit Button */}
-                <button 
-                  type="submit" 
-                  disabled={isLoading} 
+                <button
+                  type="submit"
+                  disabled={isLoading}
                   className="w-full bg-gradient-to-r from-green-500 to-blue-500 text-white py-3 px-4 rounded-lg font-semibold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                 >
                   {isLoading ? (
@@ -109,15 +111,16 @@ const ForgotForm: React.FC = () => {
                         <strong>Email inviata con successo!</strong>
                       </p>
                       <p className="text-sm text-green-700 mt-1">
-                        Controlla la tua casella di posta e segui le istruzioni nel messaggio.
+                        Controlla la tua casella di posta e segui le istruzioni
+                        nel messaggio.
                       </p>
                     </div>
                   </div>
                 </div>
 
                 {/* Resend Button */}
-                <button 
-                  onClick={() => handleSubmit(new Event('submit') as any)}
+                <button
+                  onClick={() => handleSubmit(new Event("submit") as any)}
                   disabled={isLoading}
                   className="w-full bg-gray-100 text-gray-700 py-3 px-4 rounded-lg font-semibold border border-gray-300 hover:bg-gray-200 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
@@ -144,7 +147,9 @@ const ForgotForm: React.FC = () => {
               onClick={handleBackToLogin}
               className="inline-flex items-center justify-center w-full bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 py-3 px-4 rounded-lg font-semibold hover:from-gray-200 hover:to-gray-300 hover:shadow-md transform hover:-translate-y-0.5 transition-all duration-200 group"
             >
-              <span className="mr-2 transition-transform group-hover:-translate-x-1">←</span>
+              <span className="mr-2 transition-transform group-hover:-translate-x-1">
+                ←
+              </span>
               Torna al Login
             </Link>
           </div>
@@ -153,8 +158,8 @@ const ForgotForm: React.FC = () => {
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-500">
               Non hai ricevuto l'email? Controlla la cartella spam o{" "}
-              <a 
-                href="mailto:support@mealbuddy.com" 
+              <a
+                href="mailto:support@mealbuddy.com"
                 className="text-green-600 hover:text-green-500 font-medium"
               >
                 contatta il supporto

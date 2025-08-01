@@ -5,6 +5,8 @@ interface User {
   id: string;
   username: string;
   email: string;
+  name?: string;
+  avatar?: string;
 }
 
 interface AuthContextType {
@@ -69,7 +71,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         const mockUser: User = {
           id: '1',
           username: username,
-          email: `${username}@example.com`
+          email: `${username}@example.com`,
+          name: username.charAt(0).toUpperCase() + username.slice(1),
+          avatar: ''
         };
         
         const mockToken = 'mock-jwt-token-' + Date.now();

@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
-import { Link, Outlet } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+import React, { useState } from "react";
+import { Link, Outlet } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
+import UserMenu from "../components/navigation/UserMenu";
+import Footer from "../components/layout/Footer";
 
 const Layout: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { isAuthenticated, user, logout } = useAuth();
+  const { isAuthenticated, user, logout, isLoading } = useAuth();
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -17,13 +19,22 @@ const Layout: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Navbar */}
-      <nav className="bg-gradient-to-r from-green-500 to-blue-500 text-white shadow-lg sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
+      <nav
+        className="bg-gradient-to-r from-green-500 to-blue-500 text-white shadow-lg sticky top-0 z-50"
+        style={{ overflow: "visible" }}
+      >
+        <div
+          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+          style={{ overflow: "visible" }}
+        >
+          <div
+            className="flex items-center justify-between h-16"
+            style={{ overflow: "visible" }}
+          >
             {/* Logo */}
             <div className="flex items-center">
-              <Link 
-                to="/" 
+              <Link
+                to="/"
                 onClick={closeMobileMenu}
                 className="text-white no-underline decoration-none flex items-center gap-2 hover:opacity-90 transition-opacity duration-200"
               >
@@ -39,38 +50,53 @@ const Layout: React.FC = () => {
             {/* Desktop Menu */}
             <div className="hidden md:block">
               <div className="ml-10 flex items-baseline space-x-4">
-                <Link 
-                  to="/recipes" 
-                  className="text-white no-underline decoration-none px-3 py-2 rounded-md text-sm font-medium uppercase tracking-wide transition-all duration-200 hover:bg-white/20 hover:-translate-y-0.5 hover:shadow-lg"
-                >
-                  Ricette
-                </Link>
-                <Link 
-                  to="/meal-plan" 
-                  className="text-white no-underline decoration-none px-3 py-2 rounded-md text-sm font-medium uppercase tracking-wide transition-all duration-200 hover:bg-white/20 hover:-translate-y-0.5 hover:shadow-lg"
-                >
-                  Pianificazione
-                </Link>
-                <Link 
-                  to="/shopping-list" 
-                  className="text-white no-underline decoration-none px-3 py-2 rounded-md text-sm font-medium uppercase tracking-wide transition-all duration-200 hover:bg-white/20 hover:-translate-y-0.5 hover:shadow-lg"
-                >
-                  Lista Spesa
-                </Link>
                 {isAuthenticated ? (
-                  <div className="flex items-center space-x-3">
-                    
-                    <button
-                      onClick={logout}
-                      className="bg-red-500 text-white no-underline decoration-none px-4 py-2 rounded-md text-sm font-medium uppercase tracking-wide transition-all duration-200 hover:bg-red-600 hover:-translate-y-0.5 hover:shadow-lg"
+                  <>
+                    <Link
+                      to="/dashboard"
+                      className="text-white no-underline decoration-none px-3 py-2 rounded-md text-sm font-medium uppercase tracking-wide transition-all duration-200 hover:bg-white/20 hover:-translate-y-0.5 hover:shadow-lg"
                     >
-                      Logout
-                    </button>
+                      Dashboard
+                    </Link>
+                    <Link
+                      to="/recipes"
+                      className="text-white no-underline decoration-none px-3 py-2 rounded-md text-sm font-medium uppercase tracking-wide transition-all duration-200 hover:bg-white/20 hover:-translate-y-0.5 hover:shadow-lg"
+                    >
+                      Ricette
+                    </Link>
+                    <Link
+                      to="/meal-plan"
+                      className="text-white no-underline decoration-none px-3 py-2 rounded-md text-sm font-medium uppercase tracking-wide transition-all duration-200 hover:bg-white/20 hover:-translate-y-0.5 hover:shadow-lg"
+                    >
+                      Pianificazione
+                    </Link>
+                    <Link
+                      to="/shopping-list"
+                      className="text-white no-underline decoration-none px-3 py-2 rounded-md text-sm font-medium uppercase tracking-wide transition-all duration-200 hover:bg-white/20 hover:-translate-y-0.5 hover:shadow-lg"
+                    >
+                      Lista Spesa
+                    </Link>
+                  </>
+                ) : null}
+
+                <Link
+                  to="/search"
+                  className="text-white no-underline decoration-none px-3 py-2 rounded-md text-sm font-medium uppercase tracking-wide transition-all duration-200 hover:bg-white/20 hover:-translate-y-0.5 hover:shadow-lg"
+                >
+                  🔍 Ricerca
+                </Link>
+
+                {isLoading ? (
+                  <div className="flex items-center space-x-2">
+                    <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <span className="text-sm">Caricamento...</span>
                   </div>
+                ) : isAuthenticated ? (
+                  <UserMenu />
                 ) : (
-                  <Link 
-                    to="/login" 
-                    className="bg-blue-500 text-white no-underline decoration-none px-4 py-2 rounded-md text-sm font-medium uppercase tracking-wide transition-all duration-200 hover:bg-blue-600 hover:-translate-y-0.5 hover:shadow-lg"
+                  <Link
+                    to="/login"
+                    className="bg-red-500 text-white no-underline decoration-none px-4 py-2 rounded-md text-sm font-medium uppercase tracking-wide transition-all duration-200 hover:bg-red-600 hover:-translate-y-0.5 hover:shadow-lg"
                   >
                     Login
                   </Link>
@@ -91,17 +117,17 @@ const Layout: React.FC = () => {
                 <div className="w-6 h-6 relative">
                   <span
                     className={`absolute block h-0.5 w-full bg-white transform transition-transform duration-300 ${
-                      isMobileMenuOpen ? 'rotate-45 top-2.5' : 'top-1'
+                      isMobileMenuOpen ? "rotate-45 top-2.5" : "top-1"
                     }`}
                   />
                   <span
                     className={`absolute block h-0.5 w-full bg-white transform transition-opacity duration-300 top-2.5 ${
-                      isMobileMenuOpen ? 'opacity-0' : 'opacity-100'
+                      isMobileMenuOpen ? "opacity-0" : "opacity-100"
                     }`}
                   />
                   <span
                     className={`absolute block h-0.5 w-full bg-white transform transition-transform duration-300 ${
-                      isMobileMenuOpen ? '-rotate-45 top-2.5' : 'top-4'
+                      isMobileMenuOpen ? "-rotate-45 top-2.5" : "top-4"
                     }`}
                   />
                 </div>
@@ -110,38 +136,67 @@ const Layout: React.FC = () => {
           </div>
 
           {/* Mobile Menu */}
-          <div className={`md:hidden transition-all duration-300 ease-in-out ${
-            isMobileMenuOpen 
-              ? 'max-h-screen opacity-100 pb-4' 
-              : 'max-h-0 opacity-0 overflow-hidden'
-          }`}>
+          <div
+            className={`md:hidden transition-all duration-300 ease-in-out ${
+              isMobileMenuOpen
+                ? "max-h-screen opacity-100 pb-4"
+                : "max-h-0 opacity-0 overflow-hidden"
+            }`}
+          >
             <div className="px-2 pt-2 pb-3 space-y-1 bg-black/10 rounded-lg mt-2 backdrop-blur-sm">
+              {isAuthenticated && (
+                <>
+                  <Link
+                    to="/dashboard"
+                    onClick={closeMobileMenu}
+                    className="text-white no-underline decoration-none block px-3 py-2 rounded-md text-base font-medium uppercase tracking-wide transition-all duration-200 hover:bg-white/20 active:bg-white/30"
+                  >
+                    📊 Dashboard
+                  </Link>
+                  <Link
+                    to="/recipes"
+                    onClick={closeMobileMenu}
+                    className="text-white no-underline decoration-none block px-3 py-2 rounded-md text-base font-medium uppercase tracking-wide transition-all duration-200 hover:bg-white/20 active:bg-white/30"
+                  >
+                    🍲 Ricette
+                  </Link>
+                  <Link
+                    to="/meal-plan"
+                    onClick={closeMobileMenu}
+                    className="text-white no-underline decoration-none block px-3 py-2 rounded-md text-base font-medium uppercase tracking-wide transition-all duration-200 hover:bg-white/20 active:bg-white/30"
+                  >
+                    📅 Pianificazione
+                  </Link>
+                  <Link
+                    to="/shopping-list"
+                    onClick={closeMobileMenu}
+                    className="text-white no-underline decoration-none block px-3 py-2 rounded-md text-base font-medium uppercase tracking-wide transition-all duration-200 hover:bg-white/20 active:bg-white/30"
+                  >
+                    🛒 Lista Spesa
+                  </Link>
+                </>
+              )}
+
               <Link
-                to="/recipes"
+                to="/search"
                 onClick={closeMobileMenu}
                 className="text-white no-underline decoration-none block px-3 py-2 rounded-md text-base font-medium uppercase tracking-wide transition-all duration-200 hover:bg-white/20 active:bg-white/30"
               >
-                🍲 Ricette
+                Cerca
               </Link>
-              <Link
-                to="/meal-plan"
-                onClick={closeMobileMenu}
-                className="text-white no-underline decoration-none block px-3 py-2 rounded-md text-base font-medium uppercase tracking-wide transition-all duration-200 hover:bg-white/20 active:bg-white/30"
-              >
-                📅 Pianificazione
-              </Link>
-              <Link
-                to="/shopping-list"
-                onClick={closeMobileMenu}
-                className="text-white no-underline decoration-none block px-3 py-2 rounded-md text-base font-medium uppercase tracking-wide transition-all duration-200 hover:bg-white/20 active:bg-white/30"
-              >
-                🛒 Lista Spesa
-              </Link>
+
               {isAuthenticated ? (
                 <div className="pt-2 border-t border-white/20">
                   <div className="text-white/80 px-3 py-1 text-sm">
-                    Ciao, {user?.username}
+                    Ciao, {user?.name || user?.username}
                   </div>
+                  <Link
+                    to="/profile"
+                    onClick={closeMobileMenu}
+                    className="text-white no-underline decoration-none block px-3 py-2 rounded-md text-base font-medium uppercase tracking-wide transition-all duration-200 hover:bg-white/20 active:bg-white/30 mt-2"
+                  >
+                    Il Mio Profilo
+                  </Link>
                   <button
                     onClick={() => {
                       logout();
@@ -149,16 +204,16 @@ const Layout: React.FC = () => {
                     }}
                     className="bg-red-500 text-white no-underline decoration-none block w-full text-left px-3 py-2 rounded-md text-base font-medium uppercase tracking-wide transition-all duration-200 hover:bg-red-600 active:bg-red-700 mt-2"
                   >
-                    🔓 Logout
+                    Logout
                   </button>
                 </div>
               ) : (
                 <Link
                   to="/login"
                   onClick={closeMobileMenu}
-                  className="bg-blue-500 text-white no-underline decoration-none block px-3 py-2 rounded-md text-base font-medium uppercase tracking-wide transition-all duration-200 hover:bg-blue-600 active:bg-blue-700 mt-2"
+                  className="bg-red-500 text-white no-underline decoration-none block px-3 py-2 rounded-md text-base font-medium uppercase tracking-wide transition-all duration-200 hover:bg-red-600 active:bg-red-700 mt-2"
                 >
-                  🔐 Login
+                  Login
                 </Link>
               )}
             </div>
@@ -170,6 +225,9 @@ const Layout: React.FC = () => {
       <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full">
         <Outlet />
       </main>
+
+      {/* Footer */}
+      <Footer />
 
       {/* Overlay for mobile menu */}
       {isMobileMenuOpen && (

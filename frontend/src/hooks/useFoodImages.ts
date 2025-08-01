@@ -30,8 +30,6 @@ export const useFoodImages = (searchTerm: string, options: UseFoodImagesOptions 
     const generateImageSources = (): FoodImageSource[] => {
       const qualityParams = getQualityParams(quality);
       const encodedTerm = encodeURIComponent(searchTerm);
-      const encodedCategory = encodeURIComponent(category);
-      const encodedFallback = encodeURIComponent(fallbackCategory);
 
       return [
         // Unsplash - Ricerca specifica
