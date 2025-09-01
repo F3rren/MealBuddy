@@ -1,0 +1,130 @@
+/* register.css */
+
+/* Background principale */
+body {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(to bottom right, #4ade80, #3b82f6, #9333ea);
+  padding: 1rem;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Card centrale */
+.card {
+  max-width: 28rem;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 1rem;
+  padding: 2rem;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Header */
+.card-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.card-header .logo {
+  margin: 0 auto 1rem auto;
+  width: 4rem;
+  height: 4rem;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(to right, #22c55e, #3b82f6);
+  font-size: 1.5rem;
+}
+
+.card-header h2 {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
+.card-header p {
+  color: #4b5563;
+}
+
+/* Form inputs */
+input {
+  width: 100%;
+  padding: 0.75rem 1rem 0.75rem 2.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  background-color: #f9fafb;
+  transition: all 0.2s ease;
+}
+
+input:focus {
+  outline: none;
+  border-color: transparent;
+  background-color: #fff;
+  box-shadow: 0 0 0 2px #22c55e;
+}
+
+/* Bottoni */
+button {
+  width: 100%;
+  background: linear-gradient(to right, #22c55e, #3b82f6);
+  color: #fff;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  font-size: 1.125rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Social buttons */
+.social-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  background: #fff;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  width: 100%;
+}
+
+.social-btn:hover {
+  background: #f9fafb;
+}
+
+.social-btn span {
+  color: #374151;
+  font-weight: 500;
+}
+
+/* Link */
+a {
+  color: #16a34a;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+
+a:hover {
+  color: #22c55e;
+}

@@ -1,0 +1,114 @@
+/* === LOGIN PAGE STYLES === */
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    background: linear-gradient(135deg, #38b2ac, #4299e1, #805ad5);
+    background-size: 400% 400%;
+    animation: gradientBG 12s ease infinite;
+}
+
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.container {
+    max-width: 420px;
+    width: 100%;
+}
+
+.card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(6px);
+    border-radius: 16px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    padding: 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.card h2 {
+    margin-bottom: .25rem;
+    font-size: 1.8rem;
+    color: #2d3748;
+}
+
+.card p {
+    color: #4a5568;
+    margin-bottom: 1.5rem;
+}
+
+.input-group {
+    position: relative;
+    margin-bottom: 1.2rem;
+}
+
+.input-group span {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.1rem;
+    color: #a0aec0;
+}
+
+.input-group input {
+    width: 80%;
+    padding: 0.75rem 0.75rem 0.75rem 2.5rem;
+    border-radius: 8px;
+    border: 1px solid #cbd5e0;
+    background: #f7fafc;
+    transition: 0.2s;
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: #38b2ac;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(56, 178, 172, 0.25);
+}
+
+button {
+    width: 100%;
+    padding: 0.9rem;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(90deg, #e53e3e, #c53030);
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+button:hover {
+    box-shadow: 0 4px 12px rgba(197, 48, 48, 0.4);
+    transform: translateY(-2px);
+}
+
+.forgot-password .register {
+    text-align: center;
+    margin-top: 1.5rem;
+    color: #4a5568;
+}
+
+.forgot-password a {
+    color: #ff0000;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.register a {
+    color: #38b2ac;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.links a:hover {
+    color: #2f855a;
+}
