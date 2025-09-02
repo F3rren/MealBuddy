@@ -1,37 +1,39 @@
-import React, { useState } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 
 const LoginPage: React.FC = () => {
+  //variabili da inserire
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState("");
-
-  const { login, isLoading } = useAuth();
+  const [success, setSuccess] = useState(false);
+  
   const navigate = useNavigate();
-  const location = useLocation();
-
-  // Pagina da cui l'utente è arrivato (per il redirect dopo login)
-  const from = location.state?.from || "/";
+  const { login, isLoading, isAuthenticated } = useAuth();
+  
+  useEffect(() => {
+    if (isAuthenticated) {
+      const timeout = setTimeout(() => {
+        navigate("/home");
+      }, 1000);
+      return () => clearTimeout(timeout);
+    }
+  }, [isAuthenticated, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setSuccess(false);
 
-    const success = await login(username, password);
-
-    if (success) {
-      // Qui potresti gestire il "remember me" se necessario
-      if (rememberMe) {
-        // Logica per ricordare l'utente più a lungo
-        console.log("User wants to be remembered");
-      }
-
-      // Redirect alla pagina precedente o alla home
-      navigate(from, { replace: true });
+    const result = await login(username, password);
+    if (result === true) {
+      setSuccess(true);
+    } else if (result === "2fa") {
+      navigate("/two-factor-challenge");
     } else {
-      setError("Credenziali non valide. Riprova.");
+      setError("Credenziali non valide o errore di rete.");
     }
   };
 
@@ -52,7 +54,7 @@ const LoginPage: React.FC = () => {
           </div>
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-6 mb-2">
+          <form onSubmit={handleSubmit} method="post" className="space-y-6 mb-2">
             {/* Error Message */}
             {error && (
               <div className="bg-red-50 border border-red-200 rounded-lg p-4">
@@ -66,6 +68,11 @@ const LoginPage: React.FC = () => {
                 </div>
               </div>
             )}
+            {success && (
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4 text-green-800 text-center font-semibold">
+                Login effettuato! Reindirizzamento...
+              </div>
+            )}
 
             {/* Username Field */}
             <div className="space-y-2">
@@ -75,9 +82,9 @@ const LoginPage: React.FC = () => {
                 </div>
                 <input
                   type="text"
-                  id="username"
-                  name="username"
-                  placeholder="Username"
+                  id="email"
+                  name="email"
+                  placeholder="Email"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   required

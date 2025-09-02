@@ -147,7 +147,7 @@ const Layout: React.FC = () => {
               {isAuthenticated && (
                 <>
                   <Link
-                    to="/dashboard"
+                    to="/api/dashboard"
                     onClick={closeMobileMenu}
                     className="text-white no-underline decoration-none block px-3 py-2 rounded-md text-base font-medium uppercase tracking-wide transition-all duration-200 hover:bg-white/20 active:bg-white/30"
                   >
