@@ -4,7 +4,7 @@ import { useAuth } from "../../contexts/AuthContext";
 
 const RegisterPage: React.FC = () => {
   //variabili da inserire
-  const [username, setUsername] = useState("");
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -30,11 +30,12 @@ const RegisterPage: React.FC = () => {
       setError("Le password non coincidono!");
       return;
     }
-    if (!username || !email || !password) {
+    if (!name || !email || !password) {
       setError("Tutti i campi sono obbligatori.");
       return;
     }
-    const result = await register({name: username, email, password, password_confirmation: confirmPassword});
+
+    const result = await register(name, email, password, confirmPassword);
     if (result) {
       setTimeout(() => navigate("/login"), 1500);
     }
@@ -57,7 +58,7 @@ const RegisterPage: React.FC = () => {
           </div>
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-6 mb-2">
+          <form onSubmit={handleSubmit} method="post" className="space-y-6 mb-2">
             <div id="register-error" className="bg-red-100 text-red-700 px-4 py-2 rounded mb-2 text-center text-sm">
               {error}
             </div>
@@ -72,11 +73,11 @@ const RegisterPage: React.FC = () => {
                 </div>
                 <input
                   type="text"
-                  id="username"
-                  name="username"
+                  id="name"
+                  name="name"
                   placeholder="Scegli un nome utente"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
                   required
                   className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white"
                 />

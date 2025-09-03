@@ -16,7 +16,7 @@ interface User {
 interface AuthContextType {
   user: User | null;
   login: (email: string, password: string) => Promise<true | false | "2fa">;
-  register: (data: { name: string; email: string; password: string; password_confirmation: string }) => Promise<{ success: boolean; error?: string }>;
+  register: (name: string, email: string, password: string, password_confirmation: string) => Promise<{ success: boolean; error?: string }>;
   logout: () => Promise<void>;
   isLoading: boolean;
   isAuthenticated: boolean;
@@ -48,7 +48,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const checkAuthStatus = async () => {
       setIsLoading(true);
       try {
-        const res = await axios.get('http://127.0.0.1:8000/api/user');
+        const res = await axios.get('http://localhost:8000/api/user');
         setUser(res.data);
         setSessionExpired(false);
       } catch (error: any) {
@@ -73,21 +73,72 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       return "";
     }
 
-  // Funzione di registrazione
-  const register = async (data: { name: string; email: string; password: string; password_confirmation: string }): Promise<{ success: boolean; error?: string }> => {
+  // Funzione di login
+  const login = async (email: string, password: string): Promise<boolean> => {
     setIsLoading(true);
     setSessionExpired(false);
+    console.log('[LOGIN] Tentativo di login per:', email, password);
     try {
       await axios.get('http://localhost:8000/sanctum/csrf-cookie');
       const xsrfToken = getCookie('XSRF-TOKEN');
-      console.log('[CSRF] XSRF-TOKEN cookie:', xsrfToken);
+      console.log('[CSRF] XSRF-TOKEN cookie in login:', xsrfToken);
 
-      const registerRes = await axios.post(
-        'http://localhost:8000/register',
-        data,
+      const loginRes = await axios.post(
+        'http://localhost:8000/login',
+        { email, password },
         {
           headers: {
             'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'X-XSRF-TOKEN': xsrfToken ? decodeURIComponent(xsrfToken) : '',
+          },
+        }
+      );
+      console.log('[LOGIN] Response:', loginRes.status, loginRes.data);
+      // Dopo login, recupera l'utente
+      const userRes = await axios.get('http://localhost:8000/api/user');
+
+      
+      setUser(userRes.data);
+      setIsLoading(false);
+      return true;
+    } catch (error: any) {
+      if (axios.isAxiosError(error)) {
+        console.error('[AUTH ERROR]', error.response?.status, error.response?.data);
+        if (error.response?.status === 403) {
+          alert('Errore di autenticazione: permessi insufficienti o CSRF non valido. Prova a ricaricare la pagina.');
+        } else if (error.response?.status === 401) {
+          alert('Credenziali non valide. Controlla email e password.');
+        } else if (error.response?.status === 422) {
+          alert('Errore di validazione. Controlla i dati inseriti.');
+        } else if (error.response?.status === 423) {
+          alert('Troppi tentativi di accesso falliti. Account temporaneamente bloccato. Attendi qualche minuto e riprova.');
+        }
+      }
+      setUser(null);
+      setIsLoading(false);
+      return false;
+    }
+  };
+
+  // Funzione di registrazione
+  const register = async (name: string, email: string, password: string, password_confirmation: string): Promise<{ success: boolean; error?: string }> => {
+    setIsLoading(true);
+    setSessionExpired(false);
+    console.log('[REGISTER] Attempting registration:', { name, email, password, password_confirmation });
+
+    try {
+      await axios.get('http://localhost:8000/sanctum/csrf-cookie');
+      const xsrfToken = getCookie('XSRF-TOKEN');
+      console.log('[CSRF] XSRF-TOKEN cookie in registrazione:', xsrfToken);
+
+      const registerRes = await axios.post(
+        'http://localhost:8000/register',
+        { name, email, password, password_confirmation },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
             'X-XSRF-TOKEN': xsrfToken ? decodeURIComponent(xsrfToken) : '',
           },
         }
@@ -95,6 +146,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       console.log('[REGISTER] Response:', registerRes.status, registerRes.data);
 
       // Dopo la registrazione, recupera l'utente loggato
+      const userRes = await axios.get('http://localhost:8000/api/user');
+      setUser(userRes.data);
       setIsLoading(false);
       return { success: true };
     } catch (error: any) {
@@ -116,51 +169,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  // Funzione di login
-  const login = async (email: string, password: string): Promise<true | false | "2fa"> => {
-    setIsLoading(true);
-    setSessionExpired(false);
-    try {
-      await axios.get('http://localhost:8000/sanctum/csrf-cookie');
-      const xsrfToken = getCookie('XSRF-TOKEN');
-      console.log('[CSRF] XSRF-TOKEN cookie:', xsrfToken);
-
-      const loginRes = await axios.post(
-        'http://localhost:8000/login',
-        { email, password },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            'X-XSRF-TOKEN': xsrfToken ? decodeURIComponent(xsrfToken) : '',
-          },
-        }
-      );
-      console.log('[LOGIN] Response:', loginRes.status, loginRes.data);
-      setIsLoading(false);
-      return true;
-    } catch (error: any) {
-      if (axios.isAxiosError(error)) {
-        console.error('[AUTH ERROR]', error.response?.status, error.response?.data);
-        if (error.response?.status === 409) {
-          // Laravel Fortify: 2FA required
-          setIsLoading(false);
-          return "2fa";
-        } else if (error.response?.status === 403) {
-          alert('Errore di autenticazione: permessi insufficienti o CSRF non valido. Prova a ricaricare la pagina.');
-        } else if (error.response?.status === 423) {
-          alert('Troppi tentativi di accesso falliti. Account temporaneamente bloccato. Attendi qualche minuto e riprova.');
-        }
-      }
-      setUser(null);
-      setIsLoading(false);
-      return false;
-    }
-  };
-
   const logout = async () => {
-  await axios.post('http://localhost:8000/logout', {});
-    setUser(null);
-  };
+    await axios.post('http://localhost:8000/logout', {});
+      setUser(null);
+    };
 
   const clearSessionExpired = () => setSessionExpired(false);
 

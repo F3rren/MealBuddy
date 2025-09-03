@@ -10,12 +10,10 @@ use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Str;
 use Laravel\Fortify\Actions\RedirectIfTwoFactorAuthenticatable;
 use Laravel\Fortify\Fortify;
-use PHPUnit\TextUI\XmlConfiguration\Logging\Logging;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
+use Laravel\Fortify\Contracts\{LoginResponse, RegisterResponse};
+use App\Models\User;
 
 class FortifyServiceProvider extends ServiceProvider
 {
@@ -24,7 +22,33 @@ class FortifyServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->instance(LoginResponse::class, new class implements LoginResponse {
+            public function toResponse($request)
+            {
+                if($request->wantsJson()){
+                    $user = User::where ('email', $request ->email)->first();
+                    return response()->json([
+                        'message' => 'Login successful',
+                        'token' => $user->createToken($request->email)->plainTextToken,
+                    ], 200);
+                }
+                return redirect()->intended();
+            }
+        });
+
+        $this->app->instance(RegisterResponse::class, new class implements RegisterResponse {
+            public function toResponse($request)
+            {
+                if($request->wantsJson()){
+                    $user = User::where ('email', $request ->email)->first();
+                    return response()->json([
+                        'message' => 'Registration successful, verify your email address',
+                        'token' => $user->createToken($request->email)->plainTextToken,
+                    ], 201);
+                }
+                return redirect()->intended();
+            }
+        });
     }
 
     /**
@@ -38,7 +62,7 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
         Fortify::redirectUserForTwoFactorAuthenticationUsing(RedirectIfTwoFactorAuthenticatable::class);
 
-    // Rate limiter per il login disabilitato
+        // Rate limiter per il login disabilitato
 
         RateLimiter::for('two-factor', function (Request $request) {
             return Limit::perMinute(5)->by($request->session()->get('login.id'));
@@ -47,19 +71,6 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::loginView(function (){
             return view('auth.login');
         });
-
-        Fortify::authenticateUsing(function (Request $request) {
-            // Login solo tramite email, senza password e senza due fattori
-            $email = $request->input('email');
-            $user = \App\Models\User::where('email', $email)->first();
-            if ($user) {
-                Auth::login($user);
-                $request->session()->regenerate();
-                return $user;
-            }
-            return null;
-        });
-
 
         Fortify::registerView(function (){
             return view('auth.register');

@@ -12,12 +12,10 @@ const LoginPage: React.FC = () => {
   
   const navigate = useNavigate();
   const { login, isLoading, isAuthenticated } = useAuth();
-  
+
   useEffect(() => {
     if (isAuthenticated) {
-      const timeout = setTimeout(() => {
-        navigate("/home");
-      }, 1000);
+      const timeout = setTimeout(() => {navigate("/")}, 1000);
       return () => clearTimeout(timeout);
     }
   }, [isAuthenticated, navigate]);
