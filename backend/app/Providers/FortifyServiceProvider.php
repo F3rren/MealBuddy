@@ -12,8 +12,12 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Fortify\Actions\RedirectIfTwoFactorAuthenticatable;
 use Laravel\Fortify\Fortify;
+<<<<<<< HEAD
 use Laravel\Fortify\Contracts\{LoginResponse, RegisterResponse};
 use App\Models\User;
+=======
+use PHPUnit\TextUI\XmlConfiguration\Logging\Logging;
+>>>>>>> parent of 1a58eea (implemented login function)
 
 class FortifyServiceProvider extends ServiceProvider
 {
@@ -62,7 +66,14 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
         Fortify::redirectUserForTwoFactorAuthenticationUsing(RedirectIfTwoFactorAuthenticatable::class);
 
+<<<<<<< HEAD
         // Rate limiter per il login disabilitato
+=======
+        RateLimiter::for('login', function (Request $request) {
+            $throttleKey = Str::transliterate(Str::lower($request->input(Fortify::username())).'|'.$request->ip());
+            return Limit::perMinute(5)->by($throttleKey);
+        });
+>>>>>>> parent of 1a58eea (implemented login function)
 
         RateLimiter::for('two-factor', function (Request $request) {
             return Limit::perMinute(5)->by($request->session()->get('login.id'));

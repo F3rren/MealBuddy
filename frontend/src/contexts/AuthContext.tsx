@@ -1,9 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
-import axios from 'axios';
-
-// Configura axios per inviare i cookie su tutte le richieste
-axios.defaults.withCredentials = true;
 
 interface User {
   id: string;
@@ -15,14 +11,16 @@ interface User {
 
 interface AuthContextType {
   user: User | null;
+<<<<<<< HEAD
   login: (email: string, password: string) => Promise<true | false | "2fa">;
   register: (name: string, email: string, password: string, password_confirmation: string) => Promise<{ success: boolean; error?: string }>;
   logout: () => Promise<void>;
+=======
+  login: (username: string, password: string) => Promise<boolean>;
+  logout: () => void;
+>>>>>>> parent of 1a58eea (implemented login function)
   isLoading: boolean;
   isAuthenticated: boolean;
-  isRegistred: boolean;
-  sessionExpired: boolean;
-  clearSessionExpired: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -42,12 +40,12 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [sessionExpired, setSessionExpired] = useState(false);
 
+  // Simula il controllo del token al caricamento dell'app
   useEffect(() => {
     const checkAuthStatus = async () => {
-      setIsLoading(true);
       try {
+<<<<<<< HEAD
         const res = await axios.get('http://localhost:8000/api/user');
         setUser(res.data);
         setSessionExpired(false);
@@ -57,14 +55,29 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           setSessionExpired(true);
         } else {
           setUser(null);
+=======
+        const token = localStorage.getItem('authToken');
+        const userData = localStorage.getItem('userData');
+        
+        if (token && userData) {
+          // Qui dovresti validare il token con il backend
+          const parsedUser = JSON.parse(userData);
+          setUser(parsedUser);
+>>>>>>> parent of 1a58eea (implemented login function)
         }
+      } catch (error) {
+        console.error('Error checking auth status:', error);
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('userData');
       } finally {
         setIsLoading(false);
       }
     };
+
     checkAuthStatus();
   }, []);
 
+<<<<<<< HEAD
   // Funzione per leggere un cookie dal browser
   function getCookie(name: string) {
       const value = `; ${document.cookie}`;
@@ -173,19 +186,57 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     await axios.post('http://localhost:8000/logout', {});
       setUser(null);
     };
+=======
+  const login = async (username: string, password: string): Promise<boolean> => {
+    setIsLoading(true);
+    
+    try {
+      // Simula una chiamata API di login
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      // Simula una risposta di successo (sostituisci con la tua logica API)
+      if (username && password) {
+        const mockUser: User = {
+          id: '1',
+          username: username,
+          email: `${username}@example.com`,
+          name: username.charAt(0).toUpperCase() + username.slice(1),
+          avatar: ''
+        };
+        
+        const mockToken = 'mock-jwt-token-' + Date.now();
+        
+        // Salva i dati in localStorage
+        localStorage.setItem('authToken', mockToken);
+        localStorage.setItem('userData', JSON.stringify(mockUser));
+        
+        setUser(mockUser);
+        setIsLoading(false);
+        return true;
+      }
+      
+      setIsLoading(false);
+      return false;
+    } catch (error) {
+      console.error('Login error:', error);
+      setIsLoading(false);
+      return false;
+    }
+  };
 
-  const clearSessionExpired = () => setSessionExpired(false);
+  const logout = () => {
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('userData');
+    setUser(null);
+  };
+>>>>>>> parent of 1a58eea (implemented login function)
 
-  const value: AuthContextType & { register: typeof register } = {
+  const value: AuthContextType = {
     user,
     login,
-    register,
     logout,
     isLoading,
-    isAuthenticated: !!user,
-    isRegistred: !!user,
-    sessionExpired,
-    clearSessionExpired,
+    isAuthenticated: !!user
   };
 
   return (

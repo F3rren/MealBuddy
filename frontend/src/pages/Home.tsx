@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
 const Home: React.FC = () => {
-  const { isAuthenticated, user, sessionExpired, clearSessionExpired } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const [animateElements, setAnimateElements] = useState({
     hero: false,
     features: false,
@@ -131,11 +131,6 @@ const Home: React.FC = () => {
   // Homepage pubblica per utenti non autenticati
   return (
     <div className="space-y-8">
-      {sessionExpired && (
-        <div className="bg-yellow-100 border border-yellow-300 text-yellow-800 rounded-lg p-4 text-center font-semibold max-w-xl mx-auto">
-          La sessione è scaduta. Effettua di nuovo il login.
-        </div>
-      )}
       {/* Hero Section */}
       <AnimatedSection isVisible={animateElements.hero} className="relative text-center py-16 bg-gradient-to-r from-green-400 via-blue-500 to-purple-600 rounded-2xl text-white shadow-2xl overflow-hidden transform hover:scale-[1.02] transition-transform duration-500">
         <div 
@@ -158,7 +153,6 @@ const Home: React.FC = () => {
             <Link
               to="/login"
               className="bg-white text-green-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-all duration-300 hover:scale-110 hover:shadow-2xl shadow-lg transform hover:-translate-y-1"
-              onClick={clearSessionExpired}
             >
               Accedi
             </Link>

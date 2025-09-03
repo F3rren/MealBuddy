@@ -1,35 +1,27 @@
-import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../../contexts/AuthContext";
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 const RegisterPage: React.FC = () => {
+<<<<<<< HEAD
   //variabili da inserire
   const [name, setName] = useState("");
+=======
+  const [username, setUsername] = useState("");
+>>>>>>> parent of 1a58eea (implemented login function)
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState(false);
-
-  const navigate = useNavigate();
-  const { register, isLoading, isRegistred} = useAuth();
-
-  useEffect(() => {
-    if (isRegistred) {
-      const timeout = setTimeout(() => {navigate("/login")}, 1000);
-      return () => clearTimeout(timeout);
-    }
-  }, [isRegistred, navigate]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
-    setSuccess(false);
 
+    // Validazione base
     if (password !== confirmPassword) {
-      setError("Le password non coincidono!");
+      alert("Le password non coincidono!");
       return;
     }
+<<<<<<< HEAD
     if (!name || !email || !password) {
       setError("Tutti i campi sono obbligatori.");
       return;
@@ -39,6 +31,17 @@ const RegisterPage: React.FC = () => {
     if (result) {
       setTimeout(() => navigate("/login"), 1500);
     }
+=======
+
+    setIsLoading(true);
+
+    // Simula una chiamata API
+    setTimeout(() => {
+      console.log("Registration attempt:", { username, email, password });
+      setIsLoading(false);
+      // Qui puoi aggiungere la logica di registrazione
+    }, 1500);
+>>>>>>> parent of 1a58eea (implemented login function)
   };
 
   return (
@@ -58,6 +61,7 @@ const RegisterPage: React.FC = () => {
           </div>
 
           {/* Form */}
+<<<<<<< HEAD
           <form onSubmit={handleSubmit} method="post" className="space-y-6 mb-2">
             <div id="register-error" className="bg-red-100 text-red-700 px-4 py-2 rounded mb-2 text-center text-sm">
               {error}
@@ -65,6 +69,9 @@ const RegisterPage: React.FC = () => {
             {success && (
               <div className="bg-green-100 text-green-700 px-4 py-2 rounded mb-2 text-center text-sm">Registrazione avvenuta con successo! Reindirizzamento...</div>
             )}
+=======
+          <form onSubmit={handleSubmit} className="space-y-6 mb-2">
+>>>>>>> parent of 1a58eea (implemented login function)
             {/* Username Field */}
             <div className="space-y-2">
               <div className="relative mb-2">
